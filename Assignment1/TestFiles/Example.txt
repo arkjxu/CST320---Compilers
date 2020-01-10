@@ -1,0 +1,29 @@
+// simple example input program
+// written in Turtle logo
+// use the following cmd line to compile this file:
+//     TurtleCompiler.exe Example.txt Example.tur
+// open the output file, Example.tur, in the Turtle Simulator
+
+pd
+
+int x
+x = blue
+
+repeat 50
+[
+	setc x
+	x = x + 1
+
+	fd 40
+
+	repeat 7
+	[
+		rt 45
+		fd 40
+	]
+
+	if (x > 14)
+	[
+		x = 3
+	]
+]
