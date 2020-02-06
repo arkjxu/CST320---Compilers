@@ -1,17 +1,19 @@
-/*
-Name: Jiawei Xu
-Date: January 09, 2020
-File: TurtleCompiler.cpp
-Assignment: Assignment 1
-*/
+// TurtleCompiler.cpp
+// by Pete Myers
+// OIT Jan 2017
+// C++ Turtle Compiler
+//
+// Assignment 2 handout
+//
+
 #include <stdio.h>
 #include <stdlib.h>
 
 
+int yyparse();
+
 extern FILE * yyin;
 extern FILE * yyout;
-
-extern int yylex();
 
 
 int main(int argc, char ** argv)
@@ -44,7 +46,7 @@ int main(int argc, char ** argv)
 		yyout = out_file;
 	}
 
-	yylex();
+	yyparse();
 
 	if (in_file != NULL)
 	{

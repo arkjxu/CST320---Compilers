@@ -1,0 +1,48 @@
+// assign2 pieces
+// turtle commands no params
+home
+pd
+pu
+ht
+st
+// turtle commands 1 param
+setc black
+fd 1
+bk 2
+rt 3
+lt 4
+setx 5
+sety 6
+seth 7
+// turtle commands 2 params
+setxy 8 9
+// conditional/loops/conditions/functions
+if (color = black) [ ]
+ifelse (xcor < -10) [ ] [ ]
+if (ycor > 11) [ ]
+repeat 12 [ ]
+if (color < red) [ ]
+if (heading > 13) [ ]
+if (random(14) = 15) [ ]
+if (16 - xcor > (17 * ycor)) [ ] 
+// expressions
+fd 18 + 19
+fd 20 - 21
+fd -22
+// global variables
+int g1
+g1 = 23
+fd g1 + 24
+// procedures
+to proc1 ( ) [ ]
+proc1 ( )
+to proc2 (int p1) [ ]
+proc2 ( 42 + g1 )
+to proc3 (int p1 int p2) [ ]
+proc3 ( 42 g1 )
+to proc4 ( ) [ return ]
+proc4 ( )
+to proc5 (int p1 int p2) [ return p1 * p2 ]
+g1 = proc5 ( xcor ycor )
+to proc6 ( ) [ int local1 local1 = heading ]
+proc6 ( )

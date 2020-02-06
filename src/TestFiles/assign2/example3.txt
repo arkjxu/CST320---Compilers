@@ -1,0 +1,19 @@
+home
+pd
+if (xcor > 500)
+[
+    rt 90
+    bk 500
+]
+repeat 20
+[
+    ifelse (xcor < 500)
+    [
+        rt 10
+        fd 100
+    ]
+    [
+        lt 10
+        fd 100
+    ]
+]

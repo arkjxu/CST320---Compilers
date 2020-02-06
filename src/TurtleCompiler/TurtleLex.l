@@ -10,6 +10,7 @@ Assignment: Assignment 1
 
 #include <stdio.h>
 #include <stdlib.h>
+#include "TurtleYacc.tab.h"
 
 void yyerror(const char * msg);
 
@@ -24,80 +25,92 @@ void PrintIllegal(const char * lexeme);
 
 %%
 
-\/\/[^\n]*					{  }
-\/\*([^*]|\*+[^*\/])*\*\/	{  }
-
-fd							{ PrintKeyword(yytext); }
-bk							{ PrintKeyword(yytext); }
-rt							{ PrintKeyword(yytext); }
-lt							{ PrintKeyword(yytext); }
-setc						{ PrintKeyword(yytext); }
-sety						{ PrintKeyword(yytext); }
-setxy						{ PrintKeyword(yytext); }
-setx						{ PrintKeyword(yytext); }
-home						{ PrintKeyword(yytext); }
-seth						{ PrintKeyword(yytext); }
-pd							{ PrintKeyword(yytext); }
-pu							{ PrintKeyword(yytext); }
-ht							{ PrintKeyword(yytext); }
-st							{ PrintKeyword(yytext); }
-repeat						{ PrintKeyword(yytext); }
-if							{ PrintKeyword(yytext); }
-ifelse						{ PrintKeyword(yytext); }
-to							{ PrintKeyword(yytext); }
-return						{ PrintKeyword(yytext); }
+fd							{ return FD; }
+bk							{ return BK; }
+rt							{ return RT; }
+lt							{ return LT; }
+setc						{ return SETC; }
+sety						{ return SETY; }
+setxy						{ return SETXY; }
+setx						{ return SETX; }
+home						{ return HOME; }
+seth						{ return SETH; }
+pd							{ return PD; }
+pu							{ return PU; }
+ht							{ return HT; }
+st							{ return ST; }
+repeat						{ return REPEAT; }
+if							{ return IF; }
+ifelse						{ return IFELSE; }
+to							{ return TO; }
+return						{ return RETURN; }
 
 
-color						{ PrintKeyword(yytext); }
-xcor						{ PrintKeyword(yytext); }
-ycor						{ PrintKeyword(yytext); }
-heading						{ PrintKeyword(yytext); }
-random						{ PrintKeyword(yytext); }
+color						{ return COLOR; }
+xcor						{ return XCOR; }
+ycor						{ return YCOR; }
+heading						{ return HEADING; }
+random						{ return RANDOM; }
 
-black						{ PrintKeyword(yytext); }
-white						{ PrintKeyword(yytext); }
-orange						{ PrintKeyword(yytext); }
-yellow						{ PrintKeyword(yytext); }
-lime						{ PrintKeyword(yytext); }
-cyan						{ PrintKeyword(yytext); }
-blue						{ PrintKeyword(yytext); }
-magenta						{ PrintKeyword(yytext); }
-red							{ PrintKeyword(yytext); }
-brown						{ PrintKeyword(yytext); }
-green						{ PrintKeyword(yytext); }
-turquoise					{ PrintKeyword(yytext); }
-sky							{ PrintKeyword(yytext); }
-violet						{ PrintKeyword(yytext); }
-pink						{ PrintKeyword(yytext); }
+black						{ return COLOR_NAME; }
+white						{ return COLOR_NAME; }
+orange						{ return COLOR_NAME; }
+yellow						{ return COLOR_NAME; }
+lime						{ return COLOR_NAME; }
+cyan						{ return COLOR_NAME; }
+blue						{ return COLOR_NAME; }
+magenta						{ return COLOR_NAME; }
+red							{ return COLOR_NAME; }
+brown						{ return COLOR_NAME; }
+green						{ return COLOR_NAME; }
+turquoise					{ return COLOR_NAME; }
+sky							{ return COLOR_NAME; }
+violet						{ return COLOR_NAME; }
+pink						{ return COLOR_NAME; }
 
-int							{ PrintKeyword(yytext); }
-[a-z][a-zA-Z0-9]*			{ PrintIdentifier(yytext); }
+int							{ return INT; }
 
-"+"							{ PrintKeyword(yytext); }
-"-"							{ PrintKeyword(yytext); }
-"*"							{ PrintKeyword(yytext); }
-"/"							{ PrintKeyword(yytext); }
+\-?[0-9]+					{ return NUMBER; }
 
-"="							{ PrintKeyword(yytext); }
-"<"							{ PrintKeyword(yytext); }
-">"							{ PrintKeyword(yytext); }
+"+"							{ return yytext[0]; }
+"-"							{ return yytext[0]; }
+"*"							{ return yytext[0]; }
+"/"							{ return yytext[0]; }
 
+"="							{ return yytext[0]; }
+"<"							{ return yytext[0]; }
+">"							{ return yytext[0]; }
 
--?[0-9]+					{ PrintNumber(yytext); }
+"["							{ return yytext[0]; }
+"]"							{ return yytext[0]; }
+"("							{ return yytext[0]; }
+")"							{ return yytext[0]; }
 
-"["							{ PrintKeyword(yytext); }
-"]"							{ PrintKeyword(yytext); }
-"("							{ PrintKeyword(yytext); }
-")"							{ PrintKeyword(yytext); }
+[a-zA-Z][a-zA-Z0-9]*		{ return ID; }
 
+\/\/.*\n					{ yylineno++; }
+\/\*([^*]|(\*+[^*/]))*\*+\/	{
+								for (int i = 0; yytext[i] != '\0'; ++i) {
+									if (yytext[i] == '\n')
+										yylineno++;
+								}
+							}
 
 (\t|" ")+					{ /* ignore whitespace */ }
 
 \n							{ yylineno++; }
 
-[0-9][a-zA-Z0-9]*			{ PrintIllegal(yytext); }
-.							{ PrintIllegal(yytext); }
+[0-9][a-zA-Z0-9]*			{
+								yyerror("illegal token");
+								exit(-1);
+							}
 
+[^ \+\-\*\/\(\)\[\]\=\<\>\_\t\n]*	{
+										yyerror("illegal token");
+										exit(-1);
+									}
+
+\n							{ yylineno++; }
 
 %%
 

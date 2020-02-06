@@ -152,6 +152,7 @@
   <ItemGroup>
     <ClCompile Include="TurtleLex.flex.cpp" />
     <ClCompile Include="TurtleCompiler.cpp" />
+    <ClCompile Include="TurtleYacc.tab.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Flex Include="TurtleLex.l">
@@ -162,6 +163,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\README.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="TurtleYacc.tab.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Bison Include="TurtleYacc.y" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
