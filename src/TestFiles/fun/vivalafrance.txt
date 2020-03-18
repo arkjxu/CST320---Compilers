@@ -1,0 +1,61 @@
+/* viva la france!
+
+flag is 2:3
+blue - white - red
+
+*/
+
+
+pd
+
+int bar		// short dimension of a "bar" of color
+int width	// short dimension of the flag
+int length	// long dimension of the flag
+
+bar = 100
+length = 3 * bar
+width = 2 * bar
+
+// outside border
+repeat 2
+[
+	fd length
+	lt 90
+	fd width
+	lt 90
+]
+
+// blue bar
+setc blue
+repeat bar / 2
+[
+	fd 1
+	lt 90
+	fd width
+	rt 90
+	fd 1
+	rt 90
+	fd width
+	lt 90
+]
+
+// skip white bar
+pu
+fd bar
+pd
+
+// red bar
+setc red
+repeat bar / 2
+[
+	fd 1
+	lt 90
+	fd width
+	rt 90
+	fd 1
+	rt 90
+	fd width
+	lt 90
+]
+
+ht

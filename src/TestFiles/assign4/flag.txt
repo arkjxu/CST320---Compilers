@@ -1,0 +1,200 @@
+/*
+   flag.txt
+   demonstrates Turtle grammar with a familiar flag!
+       http://www.usflag.org/flagspecs.html
+   uses procedures from Turtle v4
+*/
+
+
+//
+// procedures
+//
+
+to rect (int xstart int ystart int xwidth int yheight int fgcolor)
+[
+	setc fgcolor
+	setxy xstart ystart
+	seth 0
+	fd xwidth
+	rt 90
+	fd yheight
+	rt 90
+	fd xwidth
+	rt 90
+	fd yheight
+	rt 90
+]
+
+to fillrect (int xstart int ystart int xwidth int yheight int fillcolor)
+[
+	setc fillcolor
+	setxy xstart ystart
+	seth 0
+	repeat yheight / 2
+	[
+		fd xwidth
+		rt 90
+		fd 1
+		rt 90
+		fd xwidth
+		lt 90
+		fd 1
+		lt 90
+	]
+]
+
+to star (int diameter int fgcolor)
+[
+	setc fgcolor
+	seth 0
+	repeat 5
+	[
+		fd diameter
+		rt 145
+	]
+]
+
+to starrows(int nrows int nstars int xstart int ystart int xspacing int yspacing int stardiameter int starcolor)
+[
+	sety ystart
+	repeat nrows
+	[
+		setx xstart
+		int startop
+		startop = ycor
+		repeat nstars
+		[
+			star (stardiameter starcolor)
+
+			setx xcor + 2 * xspacing
+			sety startop
+		]
+		sety startop + 2 * yspacing
+	]
+]
+
+to stripes (int nstripes int xstart int ystart int xwidth int yheight int stripecolor)
+[
+	repeat nstripes
+	[
+		fillrect (xstart ystart xwidth yheight stripecolor)
+		ystart = ystart + 2*yheight
+	]
+]
+
+
+//
+// globals
+//
+
+int SCALE
+int ORIGINX
+int ORIGINY
+
+SCALE = 10
+ORIGINX = xcor
+ORIGINY = ycor
+
+
+//
+// calculate flag dimensions
+//
+
+int AFLAGHOIST
+int BFLAGLENGTH
+int CUNIONHOIST
+int DUNIONLENGTH
+int ESTARVERTOFFSET
+int FSTARVERTSPACING
+int GSTARHOROFFSET
+int HSTARHORSPACING
+int KSTARDIAMETER
+int LSTRIPEWIDTH
+
+AFLAGHOIST = 13 * SCALE
+BFLAGLENGTH = 19 * AFLAGHOIST / 10
+CUNIONHOIST = 7 * AFLAGHOIST / 13
+DUNIONLENGTH = 76 * AFLAGHOIST / 100
+ESTARVERTOFFSET = 54 * AFLAGHOIST / 1000
+FSTARVERTSPACING = ESTARVERTOFFSET
+GSTARHOROFFSET = 63 * AFLAGHOIST / 1000
+HSTARHORSPACING = GSTARHOROFFSET
+KSTARDIAMETER = 62 * AFLAGHOIST / 1000
+LSTRIPEWIDTH = AFLAGHOIST / 13
+
+
+//
+// program start
+//
+
+st
+pd
+
+
+//
+// flag border
+//
+
+rect (ORIGINX ORIGINY BFLAGLENGTH AFLAGHOIST black)
+
+
+//
+// union
+//
+
+// background
+fillrect (ORIGINX ORIGINY DUNIONLENGTH CUNIONHOIST blue)
+
+// 5 rows of 6 stars
+starrows (
+	5 6
+	ORIGINX + GSTARHOROFFSET - KSTARDIAMETER/2
+	ORIGINY + ESTARVERTOFFSET
+	HSTARHORSPACING
+	FSTARVERTSPACING
+	KSTARDIAMETER
+	white
+)
+
+// 4 rows of 5 stars, inset
+starrows (
+	4 5
+	ORIGINX + GSTARHOROFFSET + HSTARHORSPACING - KSTARDIAMETER/2
+	ORIGINY + ESTARVERTOFFSET + FSTARVERTSPACING
+	HSTARHORSPACING
+	FSTARVERTSPACING
+	KSTARDIAMETER
+	white
+)
+
+
+//
+// stripes
+//
+
+// 4 short stripes to right of union
+stripes (
+	4
+	ORIGINX + DUNIONLENGTH
+	ORIGINY
+	BFLAGLENGTH - DUNIONLENGTH
+	LSTRIPEWIDTH
+	red
+)
+
+// 3 long stripes below union
+stripes (
+	3
+	ORIGINX
+	ORIGINY + CUNIONHOIST + LSTRIPEWIDTH
+	BFLAGLENGTH
+	LSTRIPEWIDTH
+	red
+)
+
+
+//
+// done!
+//
+
+ht

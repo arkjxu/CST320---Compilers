@@ -1,0 +1,17 @@
+// example of recursive procedure
+
+to spiral (int angle int factor int len)
+[
+	// base case
+	if (len < 0) [ return ]
+	if (len = 0) [ return ]
+
+	// recursive case
+	fd len
+	rt angle
+	spiral (angle factor len-factor)
+]
+
+pd
+spiral (30 1 50)
+ht

@@ -1,0 +1,4 @@
+// conditional/loops/conditions/functions
+if (color < red) [ ]
+if (heading > 13) [ ]
+if (random(14) = 15) [ ]

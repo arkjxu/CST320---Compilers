@@ -1,0 +1,7 @@
+// example for variables from assignm3 doc
+int x
+x = 5
+if (x < 6) 
+[ 
+	rt x + 2
+]

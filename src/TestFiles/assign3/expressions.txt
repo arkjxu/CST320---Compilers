@@ -1,0 +1,7 @@
+// expressions
+fd 5 * 20 + 30 - 40 / 10
+setc black + 8
+
+if (16 - xcor > (17 * ycor)) [ ] 
+if (16 - xcor < (17 * ycor)) [ ] 
+if (16 - xcor = (17 * ycor)) [ ] 

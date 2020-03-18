@@ -1,0 +1,44 @@
+/* flower?
+
+found at https://www.instructables.com/id/Easy-Designs-Turtle-Graphics-Python/
+as Example 1
+
+*/
+
+
+rt 45 
+fd 90 
+rt 135 
+
+pd
+int c
+c = red
+
+setc c
+
+repeat 120
+[
+    fd 200     
+    rt 61
+    fd 200
+    rt 61
+    fd 200
+    rt 61
+    fd 200
+    rt 61
+    fd 200
+    rt 61
+    fd 200
+    rt 61
+
+    rt 11
+
+    c = c + 1
+    if (c > pink)
+    [
+        c = red
+    ]
+    setc c
+]
+
+ht

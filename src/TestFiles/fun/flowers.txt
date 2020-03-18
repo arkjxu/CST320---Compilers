@@ -1,0 +1,31 @@
+/* flowers
+
+https://github.com/asweigart/simple-turtle-tutorial-for-python/blob/master/simple_turtle_tutorial.md
+
+*/
+
+int size
+
+pd
+
+repeat 20
+[
+	setc blue + random(4) - 1
+	size = random(30)+10
+
+	pu
+	setxy random(800)+size  random(800)+size
+	pd
+
+	repeat 6
+	[
+		repeat 6
+		[
+        		fd size
+			rt 60
+		]
+        	lt 60
+	]
+]
+
+ht

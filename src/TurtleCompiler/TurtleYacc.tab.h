@@ -70,16 +70,33 @@ extern int yydebug;
      YCOR = 279,
      HEADING = 280,
      RANDOM = 281,
-     NUMBER = 282,
-     COLOR_NAME = 283,
-     INT = 284,
-     ID = 285
+     INT = 282,
+     ID = 283,
+     NUMBER = 284,
+     COLOR_NAME = 285
    };
 #endif
 
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-typedef int YYSTYPE;
+typedef union YYSTYPE
+{
+/* Line 2058 of yacc.c  */
+#line 58 "TurtleYacc.y"
+
+	TreeNode * node;
+	BlockTreeNode * blocknode;
+	ParamsTreeNode * paramsnode;
+	ArgsTreeNode * argsnode;
+	DeclarationTreeNode * declnode;
+	int value;
+	SymbolTable::Entry * symentry;
+	COLOR_TYPE color_type;
+
+
+/* Line 2058 of yacc.c  */
+#line 99 "TurtleYacc.tab.h"
+} YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1

@@ -1,0 +1,138 @@
+/* this file contains all the individual tokens and examples
+from the grammar and assignment documents */
+
+// turtle commands
+fd
+bk
+rt
+lt
+setc
+setxy
+setx
+sety
+home
+seth
+pd
+pu
+ht
+st
+// functions
+color
+xcor
+ycor
+heading
+random
+(
+)
+,
+// conditional statements and loops
+if
+ifelse
+repeat
+<
+>
+=
+[
+]
+// arithmetic
++
+-
+/
+*
+// numbers
+42
+0
+-5
+// colors
+black
+white
+orange
+yellow
+lime
+cyan
+blue
+magenta
+red
+brown
+green
+turquoise
+sky
+violet
+pink
+// variables
+foo
+Foo
+foo42
+Foo42
+foo42bar
+Foo42Bar
+=
+int
+// white space, space, tab, new-line
+ 
+	
+
+// comments
+THERESHOULDBEONLY123BETWEENHERE
+// single line whole line
+123 // single line rest of line
+/* one line comment */
+/* two
+line comment */
+/* and
+three
+line comment */
+ANDHERE
+
+// illegal
+42bar
+0x300
+// examples from grammar
+fd 10
+bk 20
+rt 90
+lt 45
+setc red
+setxy 5 25
+setx -5
+sety 32
+home
+seth 135
+pd
+pu
+ht
+st
+if (color = red)
+if (xcor > 10)
+if (ycor < 20)
+if (heading > 180)
+fd random(10) + 3
+[ fd 10 rt 30 ]
+[
+	fd 10
+	rt 30
+]
+if (color = blue)
+if (xcor < 20)
+if (ycor > 30)
+if (color = red) [fd 20]
+ifelse (color = red) [fd 20] [bk 30]
+repeat 360 [fd 1 rt 1]
+fd 42 + 100
+fd 142
+fd (3 + 5) * 2
+fd 16
+repeat xcor + 3 [fd 10]
+seth heading - 90
+x = 20 * random(5)
+bk ycor / 2
+xyz42
+42xyz
+int xyz
+x = xcor + 5
+repeat x + 3 [fd 10]
+// eamples from assign1 doc
+fd 3x00
+bk
+setc 100
+int xy3 fd 10 rt 90

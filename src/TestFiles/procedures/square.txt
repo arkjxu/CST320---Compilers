@@ -1,0 +1,13 @@
+
+to square ( )
+[
+	repeat 4
+	[
+		fd 50
+		rt 90
+	]
+]
+
+pd
+square ( )
+ht

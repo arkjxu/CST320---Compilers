@@ -1,0 +1,177 @@
+// test semantic errors
+//
+// un-comment sections to show errors
+//
+
+
+//
+// SE000 Using a variable name prior to declaration (global, local or parameter)
+//
+/*
+global1 = 42
+int global2
+global2 = global1
+to proc1 () [ localorparam = 42 ]
+to proc2 () [ int local local = localorparam ]
+*/
+
+//
+// SE001 Calling a procedure prior to declaration
+//
+/*
+proc ()
+int global
+global = proc ()
+*/
+
+//
+// SE002 Using a variable name as if it were a procedure name (e.g. calling a variable)
+//
+/*
+int global1
+int global2
+global1 ()
+global1 = global2()
+to proc (int param)
+[
+	param ()
+	global1 = param ()
+	int local
+	local ()
+	global1 = local ()
+]
+*/
+
+//
+// SE003 Using a procedure name as if it were a variable name (e.g. assigning a value to a procedure)
+//
+/*
+to proc1 ( )
+[
+	proc1 = 42
+	int local
+	local = proc1
+]
+
+to proc2 ( ) [ ]
+proc2 = 42
+int global
+global = proc2
+*/
+
+//
+// SE004 Calling a procedure with the wrong number of arguments
+//
+/*
+to proc0 () [ ]
+to proc1 (int param) [ ]
+to proc2 () [ return 42 ]
+to proc3 (int param) [ return 42 ]
+
+proc0 (42)
+proc1 ()
+proc1 (42 42)
+int global
+global = proc2 (42)
+global = proc3 ()
+global = proc3 (42 42)
+*/
+
+
+//
+// SE101 declaring a global variable multiple times with the same name
+//
+/*
+int global1
+int global1
+*/
+
+//
+// SE102 Declaring a global variable with the same name as a procedure
+//
+/*
+to proc () [ ]
+int proc
+*/
+
+//
+// SE103 Declaring a procedure multiple times with the same name
+//
+/*
+to proc () [ ]
+to proc () [ ]
+*/
+
+//
+// SE104 Declaring a procedure with the same name as a global variable
+//
+/*
+int global
+to global () [ ]
+*/
+
+//
+// SE105 Declaring a parameter multiple times with the same name in the same procedure
+//
+/*
+to proc (int param int param) [ ]	// error, same scope
+
+to proc1 (int param) [ ]
+to proc2 (int param) [ ]		// ok, diff scope
+*/
+
+//
+// SE106 Declaring a parameter with the same name as a global variable
+//
+/*
+int global
+to proc (int global) [ ]
+*/
+
+//
+// SE107 Declaring a parameter with the same name as a procedure
+//
+/*
+to proc1 ( ) [ ]
+to proc2 (int proc1) [ ]
+
+to proc3 (int proc3) [ ]
+*/
+
+//
+// SE108 Declaring a local variable multiple times with the same name in the same scope
+//
+/*
+to proc1 ( ) [ int local1 int local1 ]	// error, same scope
+
+to proc2 ( ) [ int local2 ]
+to proc3 ( ) [ int local2 ]		// ok, diff scope
+*/
+
+//
+// SE109 Declaring a local variable with the same name as a global variable
+//
+/*
+int global
+to proc ( ) [ int global ]
+*/
+
+//
+// SE110 Declaring a local variable the same name as a procedure
+//
+/*
+to proc1 ( ) [ int proc1 ]
+
+to proc2 ( ) [ ]
+to proc3 ( ) [ int proc2 ]
+*/
+
+//
+// SE111 Declaring a local variable with the same name as a parameter in the same scope
+//
+/*
+to proc1 (int param1) [ int param1 ]	// error, same scope
+
+to proc2 (int param2) [ ]
+to proc3 ( ) [ int param2 ]		// ok, diff scope
+*/

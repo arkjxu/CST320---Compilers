@@ -1,0 +1,28 @@
+pd
+
+setc blue
+
+repeat 50
+[
+    fd 80
+    
+    repeat 2
+    [
+	rt 120
+	fd 80
+    ]
+
+    fd 80
+    rt 15
+    
+    ifelse (color = pink)
+    [
+        setc blue
+    ]   
+    [
+	setc color + 1
+    ] 
+]
+
+ht
+

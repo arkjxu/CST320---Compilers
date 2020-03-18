@@ -1,0 +1,21 @@
+/* polygons */
+
+int sides
+int turn
+
+sides = 3
+
+repeat 7
+[
+	turn = 360 / sides
+
+	pd
+	repeat sides [ fd 20 rt turn ]
+	pu
+
+	seth 0
+	fd 75
+	sides = sides + 1
+]
+
+ht

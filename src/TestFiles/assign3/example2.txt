@@ -1,0 +1,7 @@
+pd
+setc red
+repeat 8
+[
+	fd 20
+	rt 45
+]

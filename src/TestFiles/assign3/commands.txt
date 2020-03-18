@@ -1,0 +1,7 @@
+// turtle commands
+ht
+st
+setx 5
+sety 6
+seth 7
+setxy 8 9

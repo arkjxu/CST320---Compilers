@@ -1,0 +1,45 @@
+/* benzene rainbow
+
+from https://www.geeksforgeeks.org/turtle-programming-python/
+
+*/
+
+int x
+
+pd
+
+x = 1
+repeat 60
+[ 
+	setc red
+	fd x
+	lt 59
+	x = x + 1
+
+	setc violet
+	fd x
+	lt 59
+	x = x + 1
+
+	setc blue
+	fd x
+	lt 59
+	x = x + 1
+
+	setc green
+	fd x
+	lt 59
+	x = x + 1
+
+	setc orange
+	fd x
+	lt 59
+	x = x + 1
+
+	setc yellow
+	fd x
+	lt 59
+	x = x + 1
+]
+
+ht 

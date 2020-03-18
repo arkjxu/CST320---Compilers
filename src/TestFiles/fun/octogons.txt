@@ -1,0 +1,23 @@
+pd
+
+int x
+x = blue
+
+repeat 50
+[
+    setc x
+    x = x + 1
+
+    fd 40
+    
+    repeat 7
+    [
+        rt 45
+        fd 40
+    ]
+    
+    if (x > 14)
+    [
+        x = 3
+    ]    
+]

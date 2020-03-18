@@ -72,7 +72,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <ExecutablePath>C:\FlexBison\win_flex_bison-latest;$(ExecutablePath)</ExecutablePath>
+    <ExecutablePath>D:\Libs\win_flex_bison-latest;C:\FlexBison\win_flex_bison-latest;$(ExecutablePath)</ExecutablePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -150,8 +150,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="codegen.cpp" />
+    <ClCompile Include="symtable.cpp" />
+    <ClCompile Include="tree.cpp" />
     <ClCompile Include="TurtleLex.flex.cpp" />
     <ClCompile Include="TurtleCompiler.cpp" />
+    <ClCompile Include="TurtleProgram.cpp" />
     <ClCompile Include="TurtleYacc.tab.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -165,6 +169,11 @@
     <None Include="..\README.md" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="codegen.h" />
+    <ClInclude Include="symtable.h" />
+    <ClInclude Include="tree.h" />
+    <ClInclude Include="TurtleConstants.h" />
+    <ClInclude Include="TurtleProgram.h" />
     <ClInclude Include="TurtleYacc.tab.h" />
   </ItemGroup>
   <ItemGroup>

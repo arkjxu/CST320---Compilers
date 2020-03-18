@@ -70,24 +70,57 @@
    by Pete Myers
    OIT Portland Fall 2008
    Bison C++ version Jan 2017
-
-   Assignment 2 handout
 */
 
 #include <stdio.h>
 #include <stdlib.h>
+#include "tree.h"
+#include "symtable.h"
+
+typedef enum {
+	SE000 = 0, SE001, SE002, SE003, SE004,
+	SE101, SE102, SE103, SE104, SE105, SE106, SE107, SE108, SE109, SE110, SE111,
+	SE_COUNT
+} SEMANTIC_ERROR;
+
+char * SEMANTIC_ERROR_STRINGS[SE_COUNT][2] =
+{
+	{ "SE000", "Using a variable name prior to declaration (global, local or parameter)" },
+	{ "SE001", "Calling a procedure prior to declaration" },
+	{ "SE002", "Using a variable name as if it were a procedure name (e.g. calling a variable)" },
+	{ "SE003", "Using a procedure name as if it were a variable name (e.g. assigning a value to a procedure)" },
+	{ "SE004", "Calling a procedure with the wrong number of arguments" },
+	{ "SE101", "Declaring a global variable multiple times with the same name" },
+	{ "SE102", "Declaring a global variable with the same name as a procedure" },
+	{ "SE103", "Declaring a procedure multiple times with the same name" },
+	{ "SE104", "Declaring a procedure with the same name as a global variable" },
+	{ "SE105", "Declaring a parameter multiple times with the same name in the same procedure" },
+	{ "SE106", "Declaring a parameter with the same name as a global variable" },
+	{ "SE107", "Declaring a parameter with the same name as a procedure" },
+	{ "SE108", "Declaring a local variable multiple times with the same name in the same scope" },
+	{ "SE109", "Declaring a local variable with the same name as a global variable" },
+	{ "SE110", "Declaring a local variable the same name as a procedure" },
+	{ "SE111", "Declaring a local variable with the same name as a parameter in the same scope" }
+};
+
+TreeNode * root;
+
+extern TreeNodeFactory * factory;
+extern STORAGE_TYPE storageForNextDecl;
+
 
 extern FILE * yyin;
 extern FILE * yyout;
 extern int yylineno;
 
 void yyerror(const char *);
+void semantic_error(SEMANTIC_ERROR err, const char * param);
 
 int yylex(void);
 
 
 /* Line 371 of yacc.c  */
-#line 91 "TurtleYacc.tab.cpp"
+#line 124 "TurtleYacc.tab.cpp"
 
 # ifndef YY_NULL
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -147,16 +180,33 @@ extern int yydebug;
      YCOR = 279,
      HEADING = 280,
      RANDOM = 281,
-     NUMBER = 282,
-     COLOR_NAME = 283,
-     INT = 284,
-     ID = 285
+     INT = 282,
+     ID = 283,
+     NUMBER = 284,
+     COLOR_NAME = 285
    };
 #endif
 
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-typedef int YYSTYPE;
+typedef union YYSTYPE
+{
+/* Line 387 of yacc.c  */
+#line 58 "TurtleYacc.y"
+
+	TreeNode * node;
+	BlockTreeNode * blocknode;
+	ParamsTreeNode * paramsnode;
+	ArgsTreeNode * argsnode;
+	DeclarationTreeNode * declnode;
+	int value;
+	SymbolTable::Entry * symentry;
+	COLOR_TYPE color_type;
+
+
+/* Line 387 of yacc.c  */
+#line 209 "TurtleYacc.tab.cpp"
+} YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
@@ -183,7 +233,7 @@ int yyparse ();
 /* Copy the second part of user declarations.  */
 
 /* Line 390 of yacc.c  */
-#line 187 "TurtleYacc.tab.cpp"
+#line 237 "TurtleYacc.tab.cpp"
 
 #ifdef short
 # undef short
@@ -478,27 +528,27 @@ static const yytype_int8 yyrhs[] =
       49,    -1,    11,    49,    -1,    18,    35,    51,    36,    37,
       43,    38,    -1,    19,    35,    51,    36,    37,    43,    38,
       37,    43,    38,    -1,    17,    49,    37,    43,    38,    -1,
-      45,    -1,    30,    39,    49,    -1,    46,    37,    43,    38,
-      -1,    30,    35,    48,    36,    -1,    21,    -1,    21,    49,
-      -1,    29,    30,    -1,    20,    30,    35,    47,    36,    -1,
+      45,    -1,    28,    39,    49,    -1,    46,    37,    43,    38,
+      -1,    28,    35,    48,    36,    -1,    21,    -1,    21,    49,
+      -1,    27,    28,    -1,    20,    28,    35,    47,    36,    -1,
       45,    47,    -1,    -1,    49,    48,    -1,    -1,    49,    31,
       49,    -1,    49,    32,    49,    -1,    49,    33,    49,    -1,
-      49,    34,    49,    -1,    35,    49,    36,    -1,    27,    -1,
-      28,    -1,    50,    -1,    30,    -1,    30,    35,    48,    36,
+      49,    34,    49,    -1,    35,    49,    36,    -1,    29,    -1,
+      30,    -1,    50,    -1,    28,    -1,    28,    35,    48,    36,
       -1,    22,    -1,    23,    -1,    24,    -1,    25,    -1,    26,
       35,    49,    36,    -1,    49,    39,    49,    -1,    49,    40,
       49,    -1,    49,    41,    49,    -1
 };
 
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
-static const yytype_uint8 yyrline[] =
+static const yytype_uint16 yyrline[] =
 {
-       0,    61,    61,    62,    65,    66,    67,    68,    69,    70,
-      71,    72,    73,    74,    75,    76,    77,    78,    79,    80,
-      81,    82,    83,    84,    85,    86,    87,    90,    93,    96,
-      97,   100,   101,   104,   105,   106,   107,   108,   109,   110,
-     111,   112,   113,   116,   117,   118,   119,   120,   123,   124,
-     125
+       0,   117,   117,   133,   136,   137,   138,   139,   140,   141,
+     142,   143,   144,   145,   146,   147,   148,   149,   150,   153,
+     159,   160,   161,   174,   183,   202,   203,   206,   258,   281,
+     286,   289,   294,   297,   298,   299,   300,   301,   302,   303,
+     304,   305,   314,   334,   335,   336,   337,   338,   341,   342,
+     343
 };
 #endif
 
@@ -510,7 +560,7 @@ static const char *const yytname[] =
   "$end", "error", "$undefined", "HOME", "FD", "RT", "SETXY", "BK", "LT",
   "SETC", "SETY", "SETX", "SETH", "PD", "PU", "HT", "ST", "REPEAT", "IF",
   "IFELSE", "TO", "RETURN", "COLOR", "XCOR", "YCOR", "HEADING", "RANDOM",
-  "NUMBER", "COLOR_NAME", "INT", "ID", "'+'", "'-'", "'*'", "'/'", "'('",
+  "INT", "ID", "NUMBER", "COLOR_NAME", "'+'", "'-'", "'*'", "'/'", "'('",
   "')'", "'['", "']'", "'='", "'<'", "'>'", "$accept", "statements",
   "statement", "vardecl", "procsig", "params", "args", "expression",
   "function", "condition", YY_NULL
@@ -560,7 +610,7 @@ static const yytype_uint8 yydefact[] =
        3,     4,     0,     0,     0,     0,     0,     0,     0,     0,
        0,    11,    12,    14,    13,     0,     0,     0,     0,    25,
        0,     0,     0,     3,    21,     0,    43,    44,    45,    46,
-       0,    38,    39,    41,     0,     5,    40,     7,     0,     6,
+       0,    41,    38,    39,     0,     5,    40,     7,     0,     6,
        9,    10,    16,    17,     8,     0,     0,     0,     0,    26,
       27,    32,     0,     1,     2,     3,     0,    32,     0,     0,
        0,     0,     0,    15,     3,     0,     0,     0,    30,     0,
@@ -582,22 +632,22 @@ static const yytype_int8 yydefgoto[] =
 static const yytype_int8 yypact[] =
 {
       83,   -68,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,   -68,   -68,   -68,   -68,     0,   -32,   -22,   -14,     0,
-     -10,   -21,    29,    83,   -68,    -6,   -68,   -68,   -68,   -68,
-      -2,   -68,   -68,    -1,     0,    97,   -68,    97,    92,    97,
-      97,    97,    97,    97,    97,    34,     0,     0,    12,    97,
+       0,   -68,   -68,   -68,   -68,     0,   -32,   -22,   -12,     0,
+      -8,   -21,    27,    83,   -68,    -6,   -68,   -68,   -68,   -68,
+      -2,    -1,   -68,   -68,     0,    74,   -68,    74,    90,    74,
+      74,    74,    74,    74,    74,    34,     0,     0,    12,    74,
      -68,     0,     0,   -68,   -68,    83,     0,     0,    45,     0,
-       0,     0,     0,    97,    83,    11,     3,    10,    24,    19,
-      92,    97,    18,    74,    21,   -68,     4,     4,   -68,   -68,
-      22,     0,     0,     0,    32,    33,    24,    23,   -68,   -68,
-     -68,   -68,   -68,   -68,    97,    97,    97,    83,    83,   -68,
-     -68,    35,    42,   -68,    72,    83,    73,   -68
+       0,     0,     0,    74,    83,    11,     3,    10,    26,    19,
+      90,    74,    18,    95,    21,   -68,     4,     4,   -68,   -68,
+      22,     0,     0,     0,    32,    33,    26,    23,   -68,   -68,
+     -68,   -68,   -68,   -68,    74,    74,    74,    83,    83,   -68,
+     -68,    35,    42,   -68,    72,    83,    79,   -68
 };
 
 /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-     -68,   -23,   -68,   -67,   -68,    46,   -55,     2,   -68,    25
+     -68,   -23,   -68,   -67,   -68,   -14,   -55,     2,   -68,    85
 };
 
 /* YYTABLE[YYPACT[STATE-NUM]].  What to do in state STATE-NUM.  If
@@ -608,18 +658,18 @@ static const yytype_uint8 yytable[] =
 {
       54,    86,    74,    46,    35,    37,    38,    39,    40,    41,
       42,    43,    44,    47,    51,    89,    48,    45,    52,    86,
-      50,    49,    26,    27,    28,    29,    30,    31,    32,    53,
+      50,    49,    26,    27,    28,    29,    30,    53,    31,    32,
       33,    55,    72,    56,    57,    34,    58,    61,    62,    84,
       63,    80,    59,    60,    61,    62,    85,    68,    65,    65,
       81,    82,    83,    20,    71,    88,    90,    92,    73,   100,
       93,    76,    77,    78,    79,    59,    60,    61,    62,    97,
-      98,    64,    67,   103,   101,   102,    59,    60,    61,    62,
+      98,    64,    99,   103,   101,   102,    59,    60,    61,    62,
      104,    75,   106,    94,    95,    96,     1,     2,     3,     4,
        5,     6,     7,     8,     9,    10,    11,    12,    13,    14,
       15,    16,    17,    18,    19,    59,    60,    61,    62,   105,
-      91,   107,    20,    21,    26,    27,    28,    29,    30,    31,
-      32,     0,    33,    59,    60,    61,    62,    34,    59,    60,
-      61,    62,    99
+      20,    21,    26,    27,    28,    29,    30,   107,    31,    32,
+      33,    59,    60,    61,    62,    34,    59,    60,    61,    62,
+       0,    91,    67
 };
 
 #define yypact_value_is_default(Yystate) \
@@ -631,19 +681,19 @@ static const yytype_uint8 yytable[] =
 static const yytype_int8 yycheck[] =
 {
       23,    68,    57,    35,     2,     3,     4,     5,     6,     7,
-       8,     9,    10,    35,    35,    70,    30,    15,    39,    86,
-      30,    19,    22,    23,    24,    25,    26,    27,    28,     0,
+       8,     9,    10,    35,    35,    70,    28,    15,    39,    86,
+      28,    19,    22,    23,    24,    25,    26,     0,    28,    29,
       30,    37,    55,    35,    35,    35,    34,    33,    34,    36,
       38,    64,    31,    32,    33,    34,    36,    35,    46,    47,
-      39,    40,    41,    29,    52,    36,    38,    36,    56,    36,
+      39,    40,    41,    27,    52,    36,    38,    36,    56,    36,
       38,    59,    60,    61,    62,    31,    32,    33,    34,    37,
-      37,    37,    47,    38,    97,    98,    31,    32,    33,    34,
+      37,    37,    86,    38,    97,    98,    31,    32,    33,    34,
       38,    36,   105,    81,    82,    83,     3,     4,     5,     6,
        7,     8,     9,    10,    11,    12,    13,    14,    15,    16,
       17,    18,    19,    20,    21,    31,    32,    33,    34,    37,
-      36,    38,    29,    30,    22,    23,    24,    25,    26,    27,
-      28,    -1,    30,    31,    32,    33,    34,    35,    31,    32,
-      33,    34,    86
+      27,    28,    22,    23,    24,    25,    26,    38,    28,    29,
+      30,    31,    32,    33,    34,    35,    31,    32,    33,    34,
+      -1,    36,    47
 };
 
 /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
@@ -652,10 +702,10 @@ static const yytype_uint8 yystos[] =
 {
        0,     3,     4,     5,     6,     7,     8,     9,    10,    11,
       12,    13,    14,    15,    16,    17,    18,    19,    20,    21,
-      29,    30,    43,    44,    45,    46,    22,    23,    24,    25,
-      26,    27,    28,    30,    35,    49,    50,    49,    49,    49,
-      49,    49,    49,    49,    49,    49,    35,    35,    30,    49,
-      30,    35,    39,     0,    43,    37,    35,    35,    49,    31,
+      27,    28,    43,    44,    45,    46,    22,    23,    24,    25,
+      26,    28,    29,    30,    35,    49,    50,    49,    49,    49,
+      49,    49,    49,    49,    49,    49,    35,    35,    28,    49,
+      28,    35,    39,     0,    43,    37,    35,    35,    49,    31,
       32,    33,    34,    49,    37,    49,    51,    51,    35,    48,
       49,    49,    43,    49,    48,    36,    49,    49,    49,    49,
       43,    39,    40,    41,    36,    36,    45,    47,    36,    48,
@@ -1462,301 +1512,463 @@ yyreduce:
     {
         case 2:
 /* Line 1792 of yacc.c  */
-#line 61 "TurtleYacc.y"
-    { printf("statements->statement statements\n"); }
+#line 117 "TurtleYacc.y"
+    {
+											if ((yyvsp[(1) - (2)].node) != NULL)
+											{
+												(yyval.blocknode) = factory->CreateBlock();
+												(yyval.blocknode)->AddChild((yyvsp[(1) - (2)].node));
+												if ((yyvsp[(2) - (2)].blocknode) != NULL) 
+												{
+													(yyval.blocknode)->AdoptChildren((yyvsp[(2) - (2)].blocknode));
+												}
+												root = (yyval.blocknode);
+											} 
+											else 
+											{
+												(yyval.blocknode) = (yyvsp[(2) - (2)].blocknode);
+											}
+										}
     break;
 
   case 3:
 /* Line 1792 of yacc.c  */
-#line 62 "TurtleYacc.y"
-    { printf("statements-><empty>\n"); }
+#line 133 "TurtleYacc.y"
+    { (yyval.blocknode) = NULL; }
     break;
 
   case 4:
 /* Line 1792 of yacc.c  */
-#line 65 "TurtleYacc.y"
-    { printf("statement->HOME\n"); }
+#line 136 "TurtleYacc.y"
+    { (yyval.node) = factory->CreateTurtleCmd(CMD_HOME); }
     break;
 
   case 5:
 /* Line 1792 of yacc.c  */
-#line 66 "TurtleYacc.y"
-    { printf("statement->FD expression\n"); }
+#line 137 "TurtleYacc.y"
+    { (yyval.node) = factory->CreateTurtleCmd(CMD_FD, (yyvsp[(2) - (2)].node)); }
     break;
 
   case 6:
 /* Line 1792 of yacc.c  */
-#line 67 "TurtleYacc.y"
-    { printf("statement->BK expression\n"); }
+#line 138 "TurtleYacc.y"
+    { (yyval.node) = factory->CreateTurtleCmd(CMD_BK, (yyvsp[(2) - (2)].node)); }
     break;
 
   case 7:
 /* Line 1792 of yacc.c  */
-#line 68 "TurtleYacc.y"
-    { printf("statement->RT expression\n"); }
+#line 139 "TurtleYacc.y"
+    { (yyval.node) = factory->CreateTurtleCmd(CMD_RT, (yyvsp[(2) - (2)].node)); }
     break;
 
   case 8:
 /* Line 1792 of yacc.c  */
-#line 69 "TurtleYacc.y"
-    { printf("statement->SETH expression\n"); }
+#line 140 "TurtleYacc.y"
+    { (yyval.node) = factory->CreateTurtleCmd(CMD_SETH, (yyvsp[(2) - (2)].node)); }
     break;
 
   case 9:
 /* Line 1792 of yacc.c  */
-#line 70 "TurtleYacc.y"
-    { printf("statement->LT expression\n"); }
+#line 141 "TurtleYacc.y"
+    { (yyval.node) = factory->CreateTurtleCmd(CMD_LT, (yyvsp[(2) - (2)].node)); }
     break;
 
   case 10:
 /* Line 1792 of yacc.c  */
-#line 71 "TurtleYacc.y"
-    { printf("statement->SETC expression\n"); }
+#line 142 "TurtleYacc.y"
+    { (yyval.node) = factory->CreateTurtleCmd(CMD_SETC, (yyvsp[(2) - (2)].node)); }
     break;
 
   case 11:
 /* Line 1792 of yacc.c  */
-#line 72 "TurtleYacc.y"
-    { printf("statement->PD\n"); }
+#line 143 "TurtleYacc.y"
+    { (yyval.node) = factory->CreateTurtleCmd(CMD_PD); }
     break;
 
   case 12:
 /* Line 1792 of yacc.c  */
-#line 73 "TurtleYacc.y"
-    { printf("statement->PU\n"); }
+#line 144 "TurtleYacc.y"
+    { (yyval.node) = factory->CreateTurtleCmd(CMD_PU); }
     break;
 
   case 13:
 /* Line 1792 of yacc.c  */
-#line 74 "TurtleYacc.y"
-    { printf("statement->ST\n"); }
+#line 145 "TurtleYacc.y"
+    { (yyval.node) = factory->CreateTurtleCmd(CMD_ST); }
     break;
 
   case 14:
 /* Line 1792 of yacc.c  */
-#line 75 "TurtleYacc.y"
-    { printf("statement->HT\n"); }
+#line 146 "TurtleYacc.y"
+    { (yyval.node) = factory->CreateTurtleCmd(CMD_HT); }
     break;
 
   case 15:
 /* Line 1792 of yacc.c  */
-#line 76 "TurtleYacc.y"
-    { printf("statement->SETXY expression expression\n"); }
+#line 147 "TurtleYacc.y"
+    { (yyval.node) = factory->CreateTurtleCmd(CMD_SETXY, (yyvsp[(2) - (3)].node), (yyvsp[(3) - (3)].node)); }
     break;
 
   case 16:
 /* Line 1792 of yacc.c  */
-#line 77 "TurtleYacc.y"
-    { printf("statement->SETY expression\n"); }
+#line 148 "TurtleYacc.y"
+    { (yyval.node) = factory->CreateTurtleCmd(CMD_SETY, (yyvsp[(2) - (2)].node)); }
     break;
 
   case 17:
 /* Line 1792 of yacc.c  */
-#line 78 "TurtleYacc.y"
-    { printf("statement->SETX expression\n"); }
+#line 149 "TurtleYacc.y"
+    { (yyval.node) = factory->CreateTurtleCmd(CMD_SETX, (yyvsp[(2) - (2)].node)); }
     break;
 
   case 18:
 /* Line 1792 of yacc.c  */
-#line 79 "TurtleYacc.y"
-    { printf("statement->IF ( condition ) [ statements ]\n"); }
+#line 150 "TurtleYacc.y"
+    { 
+														(yyval.node) = factory->CreateIf((yyvsp[(3) - (7)].node), ((yyvsp[(6) - (7)].blocknode) == NULL) ? factory->CreateBlock() : (yyvsp[(6) - (7)].blocknode));
+													}
     break;
 
   case 19:
 /* Line 1792 of yacc.c  */
-#line 80 "TurtleYacc.y"
-    { printf("statement->IFELSE ( condition ) [ statements ] [ statements ]\n"); }
+#line 153 "TurtleYacc.y"
+    { 
+																			(yyval.node) = factory->CreateIfElse(
+																				(yyvsp[(3) - (10)].node), 
+																				((yyvsp[(6) - (10)].blocknode) == NULL) ? factory->CreateBlock() : (yyvsp[(6) - (10)].blocknode), 
+																				((yyvsp[(9) - (10)].blocknode) == NULL) ? factory->CreateBlock() : (yyvsp[(9) - (10)].blocknode)); 
+																		}
     break;
 
   case 20:
 /* Line 1792 of yacc.c  */
-#line 81 "TurtleYacc.y"
-    { printf("statement->REPEAT expression [ statements ]\n"); }
+#line 159 "TurtleYacc.y"
+    { (yyval.node) = factory->CreateRepeat((yyvsp[(2) - (5)].node), ((yyvsp[(4) - (5)].blocknode) == NULL) ? factory->CreateBlock() : (yyvsp[(4) - (5)].blocknode)); }
     break;
 
   case 21:
 /* Line 1792 of yacc.c  */
-#line 82 "TurtleYacc.y"
-    { printf("statement->vardecl\n"); }
+#line 160 "TurtleYacc.y"
+    { (yyval.node) = (yyvsp[(1) - (1)].declnode); }
     break;
 
   case 22:
 /* Line 1792 of yacc.c  */
-#line 83 "TurtleYacc.y"
-    { printf("statement->ID = expression\n"); }
+#line 161 "TurtleYacc.y"
+    { 
+											if (!(yyvsp[(1) - (3)].symentry)->IsDefined())
+											{
+												semantic_error(SE000, (yyvsp[(1) - (3)].symentry)->Lexeme().c_str());
+												YYABORT;
+											}
+											else if ((yyvsp[(1) - (3)].symentry)->Type() == IT_PROC)
+											{
+												semantic_error(SE003, (yyvsp[(1) - (3)].symentry)->Lexeme().c_str());
+												YYABORT;
+											}
+											(yyval.node) = factory->CreateAssignment(factory->CreateVariable((yyvsp[(1) - (3)].symentry)), (yyvsp[(3) - (3)].node)); 
+										}
     break;
 
   case 23:
 /* Line 1792 of yacc.c  */
-#line 84 "TurtleYacc.y"
-    { printf("statement->procsig [ statements ]\n") ;}
+#line 174 "TurtleYacc.y"
+    {
+											int localScope = SymbolTable::GetInstance()->LastCreatedScope();
+											(yyval.node) = factory->CreateProcDef(
+												(yyvsp[(1) - (4)].paramsnode)->SymEntry(),
+												localScope,
+												(yyvsp[(1) - (4)].paramsnode),
+												((yyvsp[(3) - (4)].blocknode) == NULL) ? factory->CreateBlock() : (yyvsp[(3) - (4)].blocknode)
+											);
+										}
     break;
 
   case 24:
 /* Line 1792 of yacc.c  */
-#line 85 "TurtleYacc.y"
-    { printf("statement->ID ( args )\n"); }
+#line 183 "TurtleYacc.y"
+    { 
+											// Check # args vs # params
+											if (!(yyvsp[(1) - (4)].symentry)->IsDefined())
+											{
+												semantic_error(SE001, (yyvsp[(1) - (4)].symentry)->Lexeme().c_str());
+												YYABORT;
+											}
+											else if ((yyvsp[(1) - (4)].symentry)->Type() == IT_VARIABLE)
+											{
+												semantic_error(SE002, (yyvsp[(1) - (4)].symentry)->Lexeme().c_str());
+												YYABORT;
+											}
+											else if ((yyvsp[(1) - (4)].symentry)->Params() != (yyvsp[(3) - (4)].argsnode)->GetChildren().size())
+											{
+												semantic_error(SE004, (yyvsp[(1) - (4)].symentry)->Lexeme().c_str());
+												YYABORT;
+											}
+											(yyval.node) = factory->CreateProcCall((yyvsp[(1) - (4)].symentry), (yyvsp[(3) - (4)].argsnode)); 
+										}
     break;
 
   case 25:
 /* Line 1792 of yacc.c  */
-#line 86 "TurtleYacc.y"
-    { printf("statement->RETURN\n"); }
+#line 202 "TurtleYacc.y"
+    { (yyval.node) = factory->CreateReturn(); }
     break;
 
   case 26:
 /* Line 1792 of yacc.c  */
-#line 87 "TurtleYacc.y"
-    { printf("statement->RETURN expression\n"); }
+#line 203 "TurtleYacc.y"
+    { (yyval.node) = factory->CreateReturn((yyvsp[(2) - (2)].node)); }
     break;
 
   case 27:
 /* Line 1792 of yacc.c  */
-#line 90 "TurtleYacc.y"
-    { printf("vardecl->INT ID\n"); }
+#line 206 "TurtleYacc.y"
+    { 
+											if ((yyvsp[(2) - (2)].symentry)->IsDefined())
+											{
+												// TODO: Check combinations of global/local/param/proc
+												if ((yyvsp[(2) - (2)].symentry)->Scope() == ST_GLOBAL)
+												{
+													if ((yyvsp[(2) - (2)].symentry)->Type() == IT_PROC)
+													{
+														if (storageForNextDecl == ST_LOCAL)
+														{
+															semantic_error(SE110, (yyvsp[(2) - (2)].symentry)->Lexeme().c_str());
+														}
+														else 
+														{
+															semantic_error(SE102, (yyvsp[(2) - (2)].symentry)->Lexeme().c_str());
+														}
+													}
+													else if ((yyvsp[(2) - (2)].symentry)->Type() == IT_VARIABLE)
+													{
+														if (storageForNextDecl == ST_LOCAL)
+														{
+															semantic_error(SE109, (yyvsp[(2) - (2)].symentry)->Lexeme().c_str());
+														}
+														else
+														{
+															semantic_error(SE101, (yyvsp[(2) - (2)].symentry)->Lexeme().c_str());
+														}
+													}
+												}
+												else if ((yyvsp[(2) - (2)].symentry)->Scope() == ST_LOCAL)
+												{
+													semantic_error(SE108, (yyvsp[(2) - (2)].symentry)->Lexeme().c_str());
+												}
+												else if ((yyvsp[(2) - (2)].symentry)->Scope() == ST_PARAM)
+												{
+													if (storageForNextDecl == ST_LOCAL)
+													{
+														semantic_error(SE111, (yyvsp[(2) - (2)].symentry)->Lexeme().c_str());
+													}
+													else
+													{
+														semantic_error(SE105, (yyvsp[(2) - (2)].symentry)->Lexeme().c_str());
+													}
+												}
+												YYABORT;
+											}
+											(yyvsp[(2) - (2)].symentry)->Storage() = storageForNextDecl;
+											(yyvsp[(2) - (2)].symentry)->Type() = IT_VARIABLE;
+											(yyval.declnode) = factory->CreateDeclaration(IT_VARIABLE, factory->CreateVariable((yyvsp[(2) - (2)].symentry))); 
+										}
     break;
 
   case 28:
 /* Line 1792 of yacc.c  */
-#line 93 "TurtleYacc.y"
-    { printf("procsig->TO ID ( params )\n"); }
+#line 258 "TurtleYacc.y"
+    { 
+											if ((yyvsp[(2) - (5)].symentry)->IsDefined())
+											{
+												if ((yyvsp[(2) - (5)].symentry)->Type() == IT_PROC)
+												{
+													semantic_error(SE103, (yyvsp[(2) - (5)].symentry)->Lexeme().c_str());
+												}
+												else if ((yyvsp[(2) - (5)].symentry)->Type() == IT_VARIABLE)
+												{
+													if ((yyvsp[(2) - (5)].symentry)->Scope() == ST_GLOBAL)
+													{
+														semantic_error(SE104, (yyvsp[(2) - (5)].symentry)->Lexeme().c_str());
+													}
+												}
+												YYABORT;
+											}
+											(yyvsp[(2) - (5)].symentry)->Type() = IT_PROC;
+											(yyvsp[(2) - (5)].symentry)->Params() = (yyvsp[(4) - (5)].paramsnode)->GetChildren().size();
+											(yyvsp[(4) - (5)].paramsnode)->SymEntry() = (yyvsp[(2) - (5)].symentry);
+											(yyval.paramsnode) = (yyvsp[(4) - (5)].paramsnode);
+										}
     break;
 
   case 29:
 /* Line 1792 of yacc.c  */
-#line 96 "TurtleYacc.y"
-    { printf("params->vardecl params\n"); }
+#line 281 "TurtleYacc.y"
+    {
+											(yyval.paramsnode) = factory->CreateParams();
+											(yyval.paramsnode)->AddChild((yyvsp[(1) - (2)].declnode));
+											(yyval.paramsnode)->AdoptChildren((yyvsp[(2) - (2)].paramsnode));
+										}
     break;
 
   case 30:
 /* Line 1792 of yacc.c  */
-#line 97 "TurtleYacc.y"
-    { printf("params-><empty>\n"); }
+#line 286 "TurtleYacc.y"
+    { (yyval.paramsnode) = factory->CreateParams(); }
     break;
 
   case 31:
 /* Line 1792 of yacc.c  */
-#line 100 "TurtleYacc.y"
-    { printf("args->expression args\n"); }
+#line 289 "TurtleYacc.y"
+    {
+											(yyval.argsnode) = factory->CreateArgs();
+											(yyval.argsnode)->AddChild((yyvsp[(1) - (2)].node));
+											(yyval.argsnode)->AdoptChildren((yyvsp[(2) - (2)].argsnode));
+										}
     break;
 
   case 32:
 /* Line 1792 of yacc.c  */
-#line 101 "TurtleYacc.y"
-    { printf("args-><empty>\n"); }
+#line 294 "TurtleYacc.y"
+    {(yyval.argsnode) = factory->CreateArgs(); }
     break;
 
   case 33:
 /* Line 1792 of yacc.c  */
-#line 104 "TurtleYacc.y"
-    { printf("expression->expression + expression\n"); }
+#line 297 "TurtleYacc.y"
+    { (yyval.node) = factory->CreateOperator(OT_PLUS, (yyvsp[(1) - (3)].node), (yyvsp[(3) - (3)].node)); }
     break;
 
   case 34:
 /* Line 1792 of yacc.c  */
-#line 105 "TurtleYacc.y"
-    { printf("expression->expression - expression\n"); }
+#line 298 "TurtleYacc.y"
+    { (yyval.node) = factory->CreateOperator(OT_MINUS, (yyvsp[(1) - (3)].node), (yyvsp[(3) - (3)].node)); }
     break;
 
   case 35:
 /* Line 1792 of yacc.c  */
-#line 106 "TurtleYacc.y"
-    { printf("expression->expression * expression\n"); }
+#line 299 "TurtleYacc.y"
+    { (yyval.node) = factory->CreateOperator(OT_TIMES, (yyvsp[(1) - (3)].node), (yyvsp[(3) - (3)].node)); }
     break;
 
   case 36:
 /* Line 1792 of yacc.c  */
-#line 107 "TurtleYacc.y"
-    { printf("expression->expression / expression\n"); }
+#line 300 "TurtleYacc.y"
+    { (yyval.node) = factory->CreateOperator(OT_DIVIDE, (yyvsp[(1) - (3)].node), (yyvsp[(3) - (3)].node)); }
     break;
 
   case 37:
 /* Line 1792 of yacc.c  */
-#line 108 "TurtleYacc.y"
-    { printf("expression->( expression )\n"); }
+#line 301 "TurtleYacc.y"
+    { (yyval.node) = (yyvsp[(2) - (3)].node); }
     break;
 
   case 38:
 /* Line 1792 of yacc.c  */
-#line 109 "TurtleYacc.y"
-    { printf("expression->NUMBER\n"); }
+#line 302 "TurtleYacc.y"
+    { (yyval.node) = factory->CreateNumber((yyvsp[(1) - (1)].value)); }
     break;
 
   case 39:
 /* Line 1792 of yacc.c  */
-#line 110 "TurtleYacc.y"
-    { printf("expression->COLOR_NAME\n"); }
+#line 303 "TurtleYacc.y"
+    { (yyval.node) = factory->CreateColorName((yyvsp[(1) - (1)].color_type)); }
     break;
 
   case 40:
 /* Line 1792 of yacc.c  */
-#line 111 "TurtleYacc.y"
-    { printf("expression->function\n"); }
+#line 304 "TurtleYacc.y"
+    { (yyval.node) = (yyvsp[(1) - (1)].node); }
     break;
 
   case 41:
 /* Line 1792 of yacc.c  */
-#line 112 "TurtleYacc.y"
-    { printf("expression->ID\n"); }
+#line 305 "TurtleYacc.y"
+    { 
+											if (!(yyvsp[(1) - (1)].symentry)->IsDefined())
+											{
+												semantic_error(SE000, (yyvsp[(1) - (1)].symentry)->Lexeme().c_str());
+												YYABORT;
+											}
+											// TODO: Check if its a variable
+											(yyval.node) = factory->CreateVariable((yyvsp[(1) - (1)].symentry));
+										}
     break;
 
   case 42:
 /* Line 1792 of yacc.c  */
-#line 113 "TurtleYacc.y"
-    { printf("expression->ID ( args )\n"); }
+#line 314 "TurtleYacc.y"
+    { 
+											if (!(yyvsp[(1) - (4)].symentry)->IsDefined())
+											{
+												semantic_error(SE001, (yyvsp[(1) - (4)].symentry)->Lexeme().c_str());
+												YYABORT;
+											}
+											else if ((yyvsp[(1) - (4)].symentry)->Type() == IT_VARIABLE)
+											{
+												semantic_error(SE002, (yyvsp[(1) - (4)].symentry)->Lexeme().c_str());
+												YYABORT;
+											}
+											else if ((yyvsp[(1) - (4)].symentry)->Params() != (yyvsp[(3) - (4)].argsnode)->GetChildren().size())
+											{
+												semantic_error(SE004, (yyvsp[(1) - (4)].symentry)->Lexeme().c_str());
+												YYABORT;
+											}
+											(yyval.node) = factory->CreateProcCall((yyvsp[(1) - (4)].symentry), (yyvsp[(3) - (4)].argsnode)); 
+										}
     break;
 
   case 43:
 /* Line 1792 of yacc.c  */
-#line 116 "TurtleYacc.y"
-    { printf("function->COLOR\n"); }
+#line 334 "TurtleYacc.y"
+    { (yyval.node) = factory->CreateFunction(FT_COLOR); }
     break;
 
   case 44:
 /* Line 1792 of yacc.c  */
-#line 117 "TurtleYacc.y"
-    { printf("function->XCOR\n"); }
+#line 335 "TurtleYacc.y"
+    { (yyval.node) = factory->CreateFunction(FT_XCOR); }
     break;
 
   case 45:
 /* Line 1792 of yacc.c  */
-#line 118 "TurtleYacc.y"
-    { printf("function->YCOR\n"); }
+#line 336 "TurtleYacc.y"
+    { (yyval.node) = factory->CreateFunction(FT_YCOR); }
     break;
 
   case 46:
 /* Line 1792 of yacc.c  */
-#line 119 "TurtleYacc.y"
-    { printf("function->HEADING\n"); }
+#line 337 "TurtleYacc.y"
+    { (yyval.node) = factory->CreateFunction(FT_HEADING); }
     break;
 
   case 47:
 /* Line 1792 of yacc.c  */
-#line 120 "TurtleYacc.y"
-    { printf("function->RANDOM ( expression )\n"); }
+#line 338 "TurtleYacc.y"
+    { (yyval.node) = factory->CreateFunction(FT_RANDOM, (yyvsp[(3) - (4)].node)); }
     break;
 
   case 48:
 /* Line 1792 of yacc.c  */
-#line 123 "TurtleYacc.y"
-    { printf("condition->expression = expression\n"); }
+#line 341 "TurtleYacc.y"
+    { (yyval.node) = factory->CreateOperator(OT_EQUALS, (yyvsp[(1) - (3)].node), (yyvsp[(3) - (3)].node)); }
     break;
 
   case 49:
 /* Line 1792 of yacc.c  */
-#line 124 "TurtleYacc.y"
-    { printf("condition->expression < expression\n"); }
+#line 342 "TurtleYacc.y"
+    { (yyval.node) = factory->CreateOperator(OT_LESSTHAN, (yyvsp[(1) - (3)].node), (yyvsp[(3) - (3)].node)); }
     break;
 
   case 50:
 /* Line 1792 of yacc.c  */
-#line 125 "TurtleYacc.y"
-    { printf("condition->expression > expression\n"); }
+#line 343 "TurtleYacc.y"
+    { (yyval.node) = factory->CreateOperator(OT_GREATERTHAN, (yyvsp[(1) - (3)].node), (yyvsp[(3) - (3)].node)); }
     break;
 
 
 /* Line 1792 of yacc.c  */
-#line 1760 "TurtleYacc.tab.cpp"
+#line 1972 "TurtleYacc.tab.cpp"
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1988,7 +2200,12 @@ yyreturn:
 
 
 /* Line 2055 of yacc.c  */
-#line 127 "TurtleYacc.y"
+#line 345 "TurtleYacc.y"
 
 
-
+void semantic_error(SEMANTIC_ERROR err, const char * param)
+{
+	char msg[256];
+	sprintf_s(msg, sizeof(msg), "%s, %s, name='%s'", SEMANTIC_ERROR_STRINGS[err][0], SEMANTIC_ERROR_STRINGS[err][1], param);
+	yyerror(msg);
+}

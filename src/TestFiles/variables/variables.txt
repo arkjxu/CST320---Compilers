@@ -1,0 +1,17 @@
+// test global, param and local variables
+
+int g1
+g1 = 1
+
+to foo (int p2 int p3)
+[
+	int l4
+	int l5
+	int l6
+
+	l4 = g1 * 4
+	l5 = p2 + p3
+	l6 = p2 * p3
+]
+
+foo (2 3)

@@ -1,0 +1,30 @@
+﻿  Process "TurtleYacc.y" bison file
+  codegen.cpp
+  symtable.cpp
+  tree.cpp
+  TurtleLex.flex.cpp
+C:\Users\kevin\source\repos\CST320---Compilers\src\TurtleCompiler\codegen.cpp(396,47): warning C4267:  'initializing': conversion from 'size_t' to 'char', possible loss of data
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.22.27905\include\stdint.h(48,1): warning C4005:  'INT8_MIN': macro redefinition
+C:\Users\kevin\source\repos\CST320---Compilers\src\TurtleCompiler\TurtleLex.flex.cpp(60): message :  see previous definition of 'INT8_MIN'
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.22.27905\include\stdint.h(49,1): warning C4005:  'INT16_MIN': macro redefinition
+C:\Users\kevin\source\repos\CST320---Compilers\src\TurtleCompiler\TurtleLex.flex.cpp(63): message :  see previous definition of 'INT16_MIN'
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.22.27905\include\stdint.h(50,1): warning C4005:  'INT32_MIN': macro redefinition
+C:\Users\kevin\source\repos\CST320---Compilers\src\TurtleCompiler\TurtleLex.flex.cpp(66): message :  see previous definition of 'INT32_MIN'
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.22.27905\include\stdint.h(52,1): warning C4005:  'INT8_MAX': macro redefinition
+C:\Users\kevin\source\repos\CST320---Compilers\src\TurtleCompiler\TurtleLex.flex.cpp(69): message :  see previous definition of 'INT8_MAX'
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.22.27905\include\stdint.h(53,1): warning C4005:  'INT16_MAX': macro redefinition
+C:\Users\kevin\source\repos\CST320---Compilers\src\TurtleCompiler\TurtleLex.flex.cpp(72): message :  see previous definition of 'INT16_MAX'
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.22.27905\include\stdint.h(54,1): warning C4005:  'INT32_MAX': macro redefinition
+C:\Users\kevin\source\repos\CST320---Compilers\src\TurtleCompiler\TurtleLex.flex.cpp(75): message :  see previous definition of 'INT32_MAX'
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.22.27905\include\stdint.h(56,1): warning C4005:  'UINT8_MAX': macro redefinition
+C:\Users\kevin\source\repos\CST320---Compilers\src\TurtleCompiler\TurtleLex.flex.cpp(78): message :  see previous definition of 'UINT8_MAX'
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.22.27905\include\stdint.h(57,1): warning C4005:  'UINT16_MAX': macro redefinition
+C:\Users\kevin\source\repos\CST320---Compilers\src\TurtleCompiler\TurtleLex.flex.cpp(81): message :  see previous definition of 'UINT16_MAX'
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.22.27905\include\stdint.h(58,1): warning C4005:  'UINT32_MAX': macro redefinition
+  TurtleCompiler.cpp
+  TurtleProgram.cpp
+  TurtleYacc.tab.cpp
+C:\Users\kevin\source\repos\CST320---Compilers\src\TurtleCompiler\TurtleLex.flex.cpp(84): message :  see previous definition of 'UINT32_MAX'
+  Generating Code...
+C:\Users\kevin\source\repos\CST320---Compilers\src\TurtleCompiler\TurtleYacc.tab.cpp(1230,5): warning C4065:  switch statement contains 'default' but no 'case' labels
+  TurtleCompiler.vcxproj -> C:\Users\kevin\source\repos\CST320---Compilers\src\Debug\TurtleCompiler.exe

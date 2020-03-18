@@ -1,0 +1,7 @@
+// Variable semantic error scenario where variable declared twice
+int x
+int x
+if (x < 6) 
+[ 
+	rt x + 2
+]

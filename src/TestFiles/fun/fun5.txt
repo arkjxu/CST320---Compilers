@@ -1,0 +1,37 @@
+/* phyllotactic spiral
+
+Inspired by: https://courses.ideate.cmu.edu/15-104/f2016/week-10-due-nov-4/
+
+Note:
+Golden Angle is 137.507764 degrees
+Using 137 here
+
+*/
+
+int angle
+int dist
+
+angle = 0
+dist = 20
+
+pd
+
+repeat 100
+[
+	repeat 8 [ rt 45 fd 5 ]
+
+	pu
+	angle = angle + 137
+	if (angle > 360)
+	[
+		angle = angle - 360
+	]
+	seth angle
+
+	dist = dist + 5
+	fd dist
+
+	pd
+]
+
+ht

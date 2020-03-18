@@ -1,0 +1,34 @@
+/* color zones
+
+Inspired by: https://cdn.ttgtmedia.com/ITKE/cwblogs/public-sector/2011/04/21/Internet%20visualisation%20-%20crop.png
+
+*/
+
+int c
+int dist
+int bsize
+
+pd
+
+c = pink
+repeat 13
+[
+	setc c
+	dist = c * 20
+	bsize = c/2 + 1
+
+	repeat dist / 4
+	[
+		home
+		seth random(360)
+		pu
+		fd dist + random(c*2)
+		pd
+		repeat 4 [ rt 90 fd bsize ]
+	]
+
+	// next color
+	c = c - 1
+]
+
+ht

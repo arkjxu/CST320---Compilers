@@ -1,0 +1,23 @@
+/*
+	square
+from: https://www.geeksforgeeks.org/turtle-programming-python/
+*/
+
+int side
+side = 146
+
+setc blue
+
+pd
+
+repeat 7
+[
+	repeat 4
+	[
+		fd side
+		lt 90
+		side = side - 5
+	]
+]
+
+ht

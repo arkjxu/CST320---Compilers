@@ -1,0 +1,27 @@
+// assign3 test pieces
+// NOTE: same input as assign2, output will be different
+// removed syntax errors, as that is not critical for assign3
+
+// turtle commands no params
+home
+pd
+pu
+
+// turtle commands 1 param
+setc black
+fd 1
+bk 2
+rt 3
+lt 4
+
+// conditional/loops/conditions/functions
+if (color = black) [ ]
+ifelse (xcor < 10) [ ] [ ]
+if (ycor > 11) [ ]
+repeat 12 [ ]
+
+// expressions
+fd 18 + 19
+fd 20 - 21
+fd -22
+

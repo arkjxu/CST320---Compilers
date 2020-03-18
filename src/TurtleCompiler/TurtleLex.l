@@ -10,14 +10,22 @@ Assignment: Assignment 1
 
 #include <stdio.h>
 #include <stdlib.h>
+#include "tree.h"
 #include "TurtleYacc.tab.h"
+#include "symtable.h"
+
+typedef enum
+{
+	SCOPE_STATE_GLOBAL = 0,
+	SCOPE_STATE_TO = 1,
+	SCOPE_STATE_PARAM = 2,
+	SCOPE_STATE_LOCAL
+} SCOPE_STATE;
+SCOPE_STATE scope_state = SCOPE_STATE_GLOBAL;
+int bracket_count = 0;
+STORAGE_TYPE storageForNextDecl = ST_GLOBAL;
 
 void yyerror(const char * msg);
-
-void PrintKeyword(const char * lexeme);
-void PrintIdentifier(const char * lexeme);
-void PrintNumber(const char * lexeme);
-void PrintIllegal(const char * lexeme);
 
 %}
 
@@ -42,7 +50,11 @@ st							{ return ST; }
 repeat						{ return REPEAT; }
 if							{ return IF; }
 ifelse						{ return IFELSE; }
-to							{ return TO; }
+to							{
+								scope_state = SCOPE_STATE_TO;
+								return TO;
+							}
+
 return						{ return RETURN; }
 
 
@@ -52,25 +64,28 @@ ycor						{ return YCOR; }
 heading						{ return HEADING; }
 random						{ return RANDOM; }
 
-black						{ return COLOR_NAME; }
-white						{ return COLOR_NAME; }
-orange						{ return COLOR_NAME; }
-yellow						{ return COLOR_NAME; }
-lime						{ return COLOR_NAME; }
-cyan						{ return COLOR_NAME; }
-blue						{ return COLOR_NAME; }
-magenta						{ return COLOR_NAME; }
-red							{ return COLOR_NAME; }
-brown						{ return COLOR_NAME; }
-green						{ return COLOR_NAME; }
-turquoise					{ return COLOR_NAME; }
-sky							{ return COLOR_NAME; }
-violet						{ return COLOR_NAME; }
-pink						{ return COLOR_NAME; }
+black						{ yylval.color_type = BLACK; return COLOR_NAME; }
+white						{ yylval.color_type = WHITE; return COLOR_NAME; }
+orange						{ yylval.color_type = ORANGE; return COLOR_NAME; }
+yellow						{ yylval.color_type = YELLOW; return COLOR_NAME; }
+lime						{ yylval.color_type = LIME; return COLOR_NAME; }
+cyan						{ yylval.color_type = CYAN; return COLOR_NAME; }
+blue						{ yylval.color_type = BLUE; return COLOR_NAME; }
+magenta						{ yylval.color_type = MAGENTA; return COLOR_NAME; }
+red							{ yylval.color_type = RED; return COLOR_NAME; }
+brown						{ yylval.color_type = BROWN; return COLOR_NAME; }
+green						{ yylval.color_type = GREEN; return COLOR_NAME; }
+turquoise					{ yylval.color_type = TURQUOISE; return COLOR_NAME; }
+sky							{ yylval.color_type = SKY; return COLOR_NAME; }
+violet						{ yylval.color_type = VIOLET; return COLOR_NAME; }
+pink						{ yylval.color_type = PINK; return COLOR_NAME; }
 
 int							{ return INT; }
 
-\-?[0-9]+					{ return NUMBER; }
+\-?[0-9]+					{ 
+								yylval.value = atoi(yytext);
+								return NUMBER; 
+							}
 
 "+"							{ return yytext[0]; }
 "-"							{ return yytext[0]; }
@@ -81,12 +96,42 @@ int							{ return INT; }
 "<"							{ return yytext[0]; }
 ">"							{ return yytext[0]; }
 
-"["							{ return yytext[0]; }
-"]"							{ return yytext[0]; }
-"("							{ return yytext[0]; }
-")"							{ return yytext[0]; }
+"["							{
+								bracket_count++;
+								return yytext[0]; 
+							}
+"]"							{ 
+								bracket_count--;
+								if (scope_state == SCOPE_STATE_LOCAL && bracket_count == 0)
+								{
+									scope_state = SCOPE_STATE_GLOBAL;
+									storageForNextDecl = ST_GLOBAL;
+									SymbolTable::GetInstance()->ExitLocalScope();
+								}
+								return yytext[0]; 
+							}
+"("							{
+								if (scope_state == SCOPE_STATE_TO) 
+								{
+									scope_state = SCOPE_STATE_PARAM;
+									storageForNextDecl = ST_PARAM;
+									SymbolTable::GetInstance()->NewLocalScope();
+								}
+								return yytext[0]; 
+							}
+")"							{
+								if (scope_state == SCOPE_STATE_PARAM)
+								{
+									scope_state = SCOPE_STATE_LOCAL;
+									storageForNextDecl = ST_LOCAL;
+								}	
+								return yytext[0]; 
+							}
 
-[a-zA-Z][a-zA-Z0-9]*		{ return ID; }
+[a-zA-Z][a-zA-Z0-9]*		{ 
+								yylval.symentry = SymbolTable::GetInstance()->Insert(yytext, ID);
+								return ID; 
+							}
 
 \/\/.*\n					{ yylineno++; }
 \/\*([^*]|(\*+[^*/]))*\*+\/	{
@@ -113,26 +158,6 @@ int							{ return INT; }
 \n							{ yylineno++; }
 
 %%
-
-void PrintKeyword(const char * lexeme)
-{
-	printf("Keyword: %s\n", lexeme);
-}
-
-void PrintIdentifier(const char * lexeme)
-{
-	printf("Id: %s\n", lexeme);
-}
-
-void PrintNumber(const char * lexeme)
-{
-	printf("Number: %s\n", lexeme);
-}
-
-void PrintIllegal(const char * lexeme)
-{
-	printf("Illegal: %s\n", lexeme);
-}
 
 void yyerror(const char * msg)
 {

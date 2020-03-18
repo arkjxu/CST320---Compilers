@@ -596,16 +596,24 @@ Assignment: Assignment 1
 
 #include <stdio.h>
 #include <stdlib.h>
+#include "tree.h"
 #include "TurtleYacc.tab.h"
+#include "symtable.h"
+
+typedef enum
+{
+	SCOPE_STATE_GLOBAL = 0,
+	SCOPE_STATE_TO = 1,
+	SCOPE_STATE_PARAM = 2,
+	SCOPE_STATE_LOCAL
+} SCOPE_STATE;
+SCOPE_STATE scope_state = SCOPE_STATE_GLOBAL;
+int bracket_count = 0;
+STORAGE_TYPE storageForNextDecl = ST_GLOBAL;
 
 void yyerror(const char * msg);
 
-void PrintKeyword(const char * lexeme);
-void PrintIdentifier(const char * lexeme);
-void PrintNumber(const char * lexeme);
-void PrintIllegal(const char * lexeme);
-
-#line 609 "TurtleLex.flex.cpp"
+#line 617 "TurtleLex.flex.cpp"
 
 #define INITIAL 0
 
@@ -784,10 +792,10 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
     
-#line 26 "TurtleLex.l"
+#line 34 "TurtleLex.l"
 
 
-#line 791 "TurtleLex.flex.cpp"
+#line 799 "TurtleLex.flex.cpp"
 
 	if ( !(yy_init) )
 		{
@@ -872,279 +880,315 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 28 "TurtleLex.l"
+#line 36 "TurtleLex.l"
 { return FD; }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 29 "TurtleLex.l"
+#line 37 "TurtleLex.l"
 { return BK; }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 30 "TurtleLex.l"
+#line 38 "TurtleLex.l"
 { return RT; }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 31 "TurtleLex.l"
+#line 39 "TurtleLex.l"
 { return LT; }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 32 "TurtleLex.l"
+#line 40 "TurtleLex.l"
 { return SETC; }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 33 "TurtleLex.l"
+#line 41 "TurtleLex.l"
 { return SETY; }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 34 "TurtleLex.l"
+#line 42 "TurtleLex.l"
 { return SETXY; }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 35 "TurtleLex.l"
+#line 43 "TurtleLex.l"
 { return SETX; }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 36 "TurtleLex.l"
+#line 44 "TurtleLex.l"
 { return HOME; }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 37 "TurtleLex.l"
+#line 45 "TurtleLex.l"
 { return SETH; }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 38 "TurtleLex.l"
+#line 46 "TurtleLex.l"
 { return PD; }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 39 "TurtleLex.l"
+#line 47 "TurtleLex.l"
 { return PU; }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 40 "TurtleLex.l"
+#line 48 "TurtleLex.l"
 { return HT; }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 41 "TurtleLex.l"
+#line 49 "TurtleLex.l"
 { return ST; }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 42 "TurtleLex.l"
+#line 50 "TurtleLex.l"
 { return REPEAT; }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 43 "TurtleLex.l"
+#line 51 "TurtleLex.l"
 { return IF; }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 44 "TurtleLex.l"
+#line 52 "TurtleLex.l"
 { return IFELSE; }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 45 "TurtleLex.l"
-{ return TO; }
+#line 53 "TurtleLex.l"
+{
+								scope_state = SCOPE_STATE_TO;
+								return TO;
+							}
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 46 "TurtleLex.l"
+#line 58 "TurtleLex.l"
 { return RETURN; }
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 49 "TurtleLex.l"
+#line 61 "TurtleLex.l"
 { return COLOR; }
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 50 "TurtleLex.l"
+#line 62 "TurtleLex.l"
 { return XCOR; }
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 51 "TurtleLex.l"
+#line 63 "TurtleLex.l"
 { return YCOR; }
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 52 "TurtleLex.l"
+#line 64 "TurtleLex.l"
 { return HEADING; }
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 53 "TurtleLex.l"
+#line 65 "TurtleLex.l"
 { return RANDOM; }
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 55 "TurtleLex.l"
-{ return COLOR_NAME; }
+#line 67 "TurtleLex.l"
+{ yylval.color_type = BLACK; return COLOR_NAME; }
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 56 "TurtleLex.l"
-{ return COLOR_NAME; }
+#line 68 "TurtleLex.l"
+{ yylval.color_type = WHITE; return COLOR_NAME; }
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 57 "TurtleLex.l"
-{ return COLOR_NAME; }
+#line 69 "TurtleLex.l"
+{ yylval.color_type = ORANGE; return COLOR_NAME; }
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 58 "TurtleLex.l"
-{ return COLOR_NAME; }
+#line 70 "TurtleLex.l"
+{ yylval.color_type = YELLOW; return COLOR_NAME; }
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 59 "TurtleLex.l"
-{ return COLOR_NAME; }
+#line 71 "TurtleLex.l"
+{ yylval.color_type = LIME; return COLOR_NAME; }
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 60 "TurtleLex.l"
-{ return COLOR_NAME; }
+#line 72 "TurtleLex.l"
+{ yylval.color_type = CYAN; return COLOR_NAME; }
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 61 "TurtleLex.l"
-{ return COLOR_NAME; }
+#line 73 "TurtleLex.l"
+{ yylval.color_type = BLUE; return COLOR_NAME; }
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 62 "TurtleLex.l"
-{ return COLOR_NAME; }
+#line 74 "TurtleLex.l"
+{ yylval.color_type = MAGENTA; return COLOR_NAME; }
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 63 "TurtleLex.l"
-{ return COLOR_NAME; }
+#line 75 "TurtleLex.l"
+{ yylval.color_type = RED; return COLOR_NAME; }
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 64 "TurtleLex.l"
-{ return COLOR_NAME; }
+#line 76 "TurtleLex.l"
+{ yylval.color_type = BROWN; return COLOR_NAME; }
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 65 "TurtleLex.l"
-{ return COLOR_NAME; }
+#line 77 "TurtleLex.l"
+{ yylval.color_type = GREEN; return COLOR_NAME; }
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 66 "TurtleLex.l"
-{ return COLOR_NAME; }
+#line 78 "TurtleLex.l"
+{ yylval.color_type = TURQUOISE; return COLOR_NAME; }
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 67 "TurtleLex.l"
-{ return COLOR_NAME; }
+#line 79 "TurtleLex.l"
+{ yylval.color_type = SKY; return COLOR_NAME; }
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 68 "TurtleLex.l"
-{ return COLOR_NAME; }
+#line 80 "TurtleLex.l"
+{ yylval.color_type = VIOLET; return COLOR_NAME; }
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 69 "TurtleLex.l"
-{ return COLOR_NAME; }
+#line 81 "TurtleLex.l"
+{ yylval.color_type = PINK; return COLOR_NAME; }
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 71 "TurtleLex.l"
+#line 83 "TurtleLex.l"
 { return INT; }
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 73 "TurtleLex.l"
-{ return NUMBER; }
+#line 85 "TurtleLex.l"
+{ 
+								yylval.value = atoi(yytext);
+								return NUMBER; 
+							}
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 75 "TurtleLex.l"
+#line 90 "TurtleLex.l"
 { return yytext[0]; }
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 76 "TurtleLex.l"
+#line 91 "TurtleLex.l"
 { return yytext[0]; }
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 77 "TurtleLex.l"
+#line 92 "TurtleLex.l"
 { return yytext[0]; }
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 78 "TurtleLex.l"
+#line 93 "TurtleLex.l"
 { return yytext[0]; }
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 80 "TurtleLex.l"
+#line 95 "TurtleLex.l"
 { return yytext[0]; }
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 81 "TurtleLex.l"
+#line 96 "TurtleLex.l"
 { return yytext[0]; }
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 82 "TurtleLex.l"
+#line 97 "TurtleLex.l"
 { return yytext[0]; }
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 84 "TurtleLex.l"
-{ return yytext[0]; }
+#line 99 "TurtleLex.l"
+{
+								bracket_count++;
+								return yytext[0]; 
+							}
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
-#line 85 "TurtleLex.l"
-{ return yytext[0]; }
+#line 103 "TurtleLex.l"
+{ 
+								bracket_count--;
+								if (scope_state == SCOPE_STATE_LOCAL && bracket_count == 0)
+								{
+									scope_state = SCOPE_STATE_GLOBAL;
+									storageForNextDecl = ST_GLOBAL;
+									SymbolTable::GetInstance()->ExitLocalScope();
+								}
+								return yytext[0]; 
+							}
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
-#line 86 "TurtleLex.l"
-{ return yytext[0]; }
+#line 113 "TurtleLex.l"
+{
+								if (scope_state == SCOPE_STATE_TO) 
+								{
+									scope_state = SCOPE_STATE_PARAM;
+									storageForNextDecl = ST_PARAM;
+									SymbolTable::GetInstance()->NewLocalScope();
+								}
+								return yytext[0]; 
+							}
 	YY_BREAK
 case 52:
 YY_RULE_SETUP
-#line 87 "TurtleLex.l"
-{ return yytext[0]; }
+#line 122 "TurtleLex.l"
+{
+								if (scope_state == SCOPE_STATE_PARAM)
+								{
+									scope_state = SCOPE_STATE_LOCAL;
+									storageForNextDecl = ST_LOCAL;
+								}	
+								return yytext[0]; 
+							}
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
-#line 89 "TurtleLex.l"
-{ return ID; }
+#line 131 "TurtleLex.l"
+{ 
+								yylval.symentry = SymbolTable::GetInstance()->Insert(yytext, ID);
+								return ID; 
+							}
 	YY_BREAK
 case 54:
 /* rule 54 can match eol */
 YY_RULE_SETUP
-#line 91 "TurtleLex.l"
+#line 136 "TurtleLex.l"
 { yylineno++; }
 	YY_BREAK
 case 55:
 /* rule 55 can match eol */
 YY_RULE_SETUP
-#line 92 "TurtleLex.l"
+#line 137 "TurtleLex.l"
 {
 								for (int i = 0; yytext[i] != '\0'; ++i) {
 									if (yytext[i] == '\n')
@@ -1154,18 +1198,18 @@ YY_RULE_SETUP
 	YY_BREAK
 case 56:
 YY_RULE_SETUP
-#line 99 "TurtleLex.l"
+#line 144 "TurtleLex.l"
 { /* ignore whitespace */ }
 	YY_BREAK
 case 57:
 /* rule 57 can match eol */
 YY_RULE_SETUP
-#line 101 "TurtleLex.l"
+#line 146 "TurtleLex.l"
 { yylineno++; }
 	YY_BREAK
 case 58:
 YY_RULE_SETUP
-#line 103 "TurtleLex.l"
+#line 148 "TurtleLex.l"
 {
 								yyerror("illegal token");
 								exit(-1);
@@ -1173,7 +1217,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 59:
 YY_RULE_SETUP
-#line 108 "TurtleLex.l"
+#line 153 "TurtleLex.l"
 {
 										yyerror("illegal token");
 										exit(-1);
@@ -1182,15 +1226,15 @@ YY_RULE_SETUP
 case 60:
 /* rule 60 can match eol */
 YY_RULE_SETUP
-#line 113 "TurtleLex.l"
+#line 158 "TurtleLex.l"
 { yylineno++; }
 	YY_BREAK
 case 61:
 YY_RULE_SETUP
-#line 115 "TurtleLex.l"
+#line 160 "TurtleLex.l"
 ECHO;
 	YY_BREAK
-#line 1194 "TurtleLex.flex.cpp"
+#line 1238 "TurtleLex.flex.cpp"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2184,29 +2228,9 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 114 "TurtleLex.l"
+#line 159 "TurtleLex.l"
 
 
-
-void PrintKeyword(const char * lexeme)
-{
-	printf("Keyword: %s\n", lexeme);
-}
-
-void PrintIdentifier(const char * lexeme)
-{
-	printf("Id: %s\n", lexeme);
-}
-
-void PrintNumber(const char * lexeme)
-{
-	printf("Number: %s\n", lexeme);
-}
-
-void PrintIllegal(const char * lexeme)
-{
-	printf("Illegal: %s\n", lexeme);
-}
 
 void yyerror(const char * msg)
 {

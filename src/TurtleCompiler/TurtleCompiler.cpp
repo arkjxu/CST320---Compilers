@@ -3,23 +3,32 @@
 // OIT Jan 2017
 // C++ Turtle Compiler
 //
-// Assignment 2 handout
+// Assignment 4 hand out
 //
 
 #include <stdio.h>
 #include <stdlib.h>
+#include "symtable.h"
+#include "tree.h"
+#include "codegen.h"
+#include "TurtleYacc.tab.h"
 
 
 int yyparse();
 
-extern FILE * yyin;
-extern FILE * yyout;
+TreeNodeFactory* factory;
+
+extern TreeNode* root;
+extern FILE* yyin;
+extern FILE* yyout;
 
 
-int main(int argc, char ** argv)
+int main(int argc, char** argv)
 {
-	FILE * in_file = NULL;
-	FILE * out_file = NULL;
+	factory = new GenTreeNodeFactory();		// GenTreeNodeFactory: create nodes that can generate object code
+
+	FILE* in_file = NULL;
+	FILE* out_file = NULL;
 
 	// usage: TurtleCompiler [<in_fname> [<out_fname>]]
 	// where...
@@ -46,7 +55,34 @@ int main(int argc, char ** argv)
 		yyout = out_file;
 	}
 
+	root = NULL;
+
 	yyparse();
+
+	if (root != NULL)
+	{
+		// unoptimized tree
+		fprintf(stdout, "Syntax Tree...\n");
+		root->PrintTree(stdout);
+		fprintf(stdout, "\n");
+
+		// generate code
+		TurtleProgram program;
+		root->GenerateNode(&program);
+		program.EXIT();
+		program.CommitBinary();
+
+		// unoptimized code
+		fprintf(stdout, "Object Code...\n");
+		program.PrintProgram(stdout);
+
+		if (yyout != NULL)
+		{
+			int size = program.GetSize();
+			fprintf(stdout, "writing %d bytes to file\n", size);
+			program.WriteBinary(yyout);
+		}
+	}
 
 	if (in_file != NULL)
 	{

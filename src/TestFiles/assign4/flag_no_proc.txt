@@ -1,0 +1,175 @@
+/*
+   flag.txt
+   demonstrates Turtle grammar with a familiar flag!
+   http://www.usflag.org/flagspecs.html
+*/
+
+int SCALE
+int ORIGINX
+int ORIGINY
+
+SCALE = 10
+ORIGINX = xcor
+ORIGINY = ycor
+
+st
+pd
+
+
+//
+// flag dimensions
+//
+
+int AFLAGHOIST
+int BFLAGLENGTH
+int CUNIONHOIST
+int DUNIONLENGTH
+int ESTARVERTOFFSET
+int FSTARVERTSPACING
+int GSTARHOROFFSET
+int HSTARHORSPACING
+int KSTARDIAMETER
+int LSTRIPEWIDTH
+
+AFLAGHOIST = 13 * SCALE
+BFLAGLENGTH = 19 * AFLAGHOIST / 10
+CUNIONHOIST = 7 * AFLAGHOIST / 13
+DUNIONLENGTH = 76 * AFLAGHOIST / 100
+ESTARVERTOFFSET = 54 * AFLAGHOIST / 1000
+FSTARVERTSPACING = ESTARVERTOFFSET
+GSTARHOROFFSET = 63 * AFLAGHOIST / 1000
+HSTARHORSPACING = GSTARHOROFFSET
+KSTARDIAMETER = 62 * AFLAGHOIST / 1000
+LSTRIPEWIDTH = AFLAGHOIST / 13
+
+
+//
+// draw flag border
+//
+
+// border
+seth 0
+setc black
+fd BFLAGLENGTH
+rt 90
+fd AFLAGHOIST
+rt 90
+fd BFLAGLENGTH
+rt 90
+fd AFLAGHOIST
+rt 90
+
+//
+// union
+//
+
+setc blue
+setxy ORIGINX ORIGINY
+repeat CUNIONHOIST / 2
+[
+	fd DUNIONLENGTH
+	rt 90
+	fd 1
+	rt 90
+	fd DUNIONLENGTH
+	lt 90
+	fd 1
+	lt 90
+]
+
+setc white
+sety (ORIGINY + ESTARVERTOFFSET)
+repeat 5
+[
+	setx (ORIGINX + GSTARHOROFFSET - KSTARDIAMETER / 2)
+	int startop
+	startop = ycor
+	repeat 6
+	[
+		// one star
+		seth 0
+		repeat 5
+		[
+			fd KSTARDIAMETER
+			rt 145
+		]
+		setx xcor + 2 * HSTARHORSPACING
+		sety startop
+	]
+
+	// next row
+	sety startop + 2 * FSTARVERTSPACING
+]
+
+sety (ORIGINY + ESTARVERTOFFSET + FSTARVERTSPACING)
+repeat 4
+[
+	setx (ORIGINX + GSTARHOROFFSET + HSTARHORSPACING - KSTARDIAMETER / 2)
+	startop = ycor
+	repeat 5
+	[
+		// one star
+		seth 0
+		repeat 5
+		[
+			fd KSTARDIAMETER
+			rt 145
+		]
+		setx xcor + 2 * HSTARHORSPACING
+		sety startop
+	]
+
+	// next row
+	sety startop + 2 * FSTARVERTSPACING
+]
+
+//
+// stripes
+//
+
+int shortstripe
+shortstripe = BFLAGLENGTH - DUNIONLENGTH
+seth 0
+setc red
+setxy (ORIGINX + DUNIONLENGTH) ORIGINY
+repeat 4
+[
+	repeat LSTRIPEWIDTH / 2
+	[
+		fd shortstripe
+		rt 90
+		fd 1
+		rt 90
+		fd shortstripe
+		lt 90
+		fd 1
+		lt 90
+	]
+
+	sety ycor + LSTRIPEWIDTH
+]
+
+setx ORIGINX
+repeat 3
+[
+	repeat LSTRIPEWIDTH / 2
+	[
+		fd BFLAGLENGTH
+		rt 90
+		fd 1
+		rt 90
+		fd BFLAGLENGTH
+		lt 90
+		fd 1
+		lt 90
+	]
+
+	sety ycor + LSTRIPEWIDTH
+]
+
+//
+// done!
+//
+
+ht
+

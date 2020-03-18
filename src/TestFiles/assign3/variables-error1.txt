@@ -1,0 +1,5 @@
+// Variable semantic error scenario where variable x used without being delcared 
+if (x < 6) 
+[ 
+	rt x + 2
+]
